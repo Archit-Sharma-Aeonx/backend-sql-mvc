@@ -1,0 +1,14 @@
+<!-- THIS IS THE FRONT END EXAMPLE THAT BASICALLY SENDS A REQ AND VERIFIES
+THE CORS ORIGIN REQ CONCEPT !! -->
+
+<html>
+    <head>
+<script>
+        fetch("http://localhost:5000/user").then(()=>{console.log("API CALL SUCCESS")}).catch((e) => {console.log(e.message)});
+    </script>
+    </head>
+    
+<body>
+    Testing the api cors.
+</body>
+</html>
