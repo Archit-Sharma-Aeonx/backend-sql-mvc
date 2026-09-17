@@ -36,5 +36,5 @@ app.use(notFound);
 app.use(handleError);
 
 app.listen(PORT , () => {
-    console.log(`Ther server is listening at http://localhost:${PORT}`);
+    console.log(`The server is listening at http://localhost:${PORT}`);
 });
