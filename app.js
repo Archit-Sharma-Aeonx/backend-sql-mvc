@@ -1,37 +1,40 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { notFound } from "./middlewares/notFound.js";
-import { handleError } from "./middlewares/handleError.js";
-import notesRoute from "./notes/notes.routes.js";
-import usersRoute from "./users/users.router.js";
-import productsRoute from "./products/products.router.js";
+import bodyParser from "body-parser";
+import {handleError} from "./middlewares/handleError.js"
+import {notFound} from "./middlewares/notFound.js"
+import userrouter from "./router/user.controller.js"
+
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5454;
 
+//Connect to front end by cors origin 
+// check with preflight check we send a 200 that says ok !!
 
-// connected frontend at "http://localhost:5173" 
-// also the preflight check we send 200 that says ok !!
 const corsOptions = {
-    origin: "http://127.0.0.1:5501",
+    origin: "http://127.0.0.1:5500",
     optionSuccessStatus: 200,
 };
 
-//middleware
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(bodyParser.json());
 
 
-//api routes 
-app.use('/notes' , notesRoute);
-app.use('/user' , usersRoute);
-app.use('/products' , productsRoute);
+
+app.get("/check" , (Req , resp) => {
+    resp.json ({
+        message : "This is the working with respect to MVC structure 🎉 !!"
+    })
+});
+
+app.use("/user" , userrouter);
 
 app.use(notFound);
 app.use(handleError);
 
-app.listen(port , () => {
-    console.log(`Server is running on http://localhost:${port}`)
+app.listen(PORT , () => {
+    console.log(`Ther server is listening at http://localhost:${PORT}`);
 });
