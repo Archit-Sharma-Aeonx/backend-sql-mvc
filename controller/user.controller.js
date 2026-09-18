@@ -32,16 +32,45 @@ export const AddUser = tryCatchWrapper(async (req, resp) => {
 export const PatchUser = tryCatchWrapper(async (req, resp) => {
 
     const { id } = req.params
-    const { name, phone_number, email, age, password, role } = req.body
 
-    if (!id || !name || !phone_number || !email || !age || !password || !role) return resp.status(400).json({ message: "All fields are required" })
+    const allowedFields = [
+        "name",
+        "phone_number",
+        "email",
+        "age",
+        "password",
+        "role"
+    ];
 
-    const result = await UsersModel.updateUser(id, name, phone_number, email, age, password, role);
-    if (result.affectedRows === 0) return resp.status(404).json({ message: "User with given id does not exist" });
+    const fields = Object.keys(req.body);
 
+    const validFields = fields.filter((field) => {
+        return allowedFields.includes(field);
+    });
 
-    return resp.status(200).json({ message: "User updated according to given details" });
+    if (validFields.length === 0) {
+        return resp.status(400).json({
+            message: "No valid fields provided for update "
+        });
+    }
 
+    const updateFields = validFields.map((field) => {
+        return `${field} = ?`
+    })
+
+    const setClause = updateFields.join(", ");
+
+    const values = validFields.map((field) => {
+        return req.body[field];
+    });
+
+    values.push(id);
+
+    const result = await UsersModel.updateUser(values, setClause);
+
+    if(result.affectedRows === 0 ) return resp.status(404).json("No user with given id is found!!!")
+
+    return resp.status(200).json(`Update is successfully for given fields! `)
 });
 
 export const removeUser = tryCatchWrapper(async (req, resp) => {

@@ -1,4 +1,5 @@
 import pool from "../db/connect.js"
+import { PatchUser } from "../controller/user.controller.js";
 
 const UsersModel = {
 
@@ -23,9 +24,9 @@ const UsersModel = {
         return result;
     },
 
-    updateUser: async (id, name, phone_number, email, age, password, role) => {
-        const [result] = await pool.query("UPDATE  users set name = ? , phone_number =? , email =? , age =? , password=? , role = ? where id =? ",
-            [name, phone_number, email, age, password, role, id]
+    updateUser: async (values , setClause) => {
+        const [result] = await pool.query(`UPDATE  users set ${setClause} where id =? `,
+            values
         );
 
         return result;

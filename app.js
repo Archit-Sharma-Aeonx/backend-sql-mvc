@@ -4,7 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import {handleError} from "./middlewares/handleError.js"
 import {notFound} from "./middlewares/notFound.js"
-import userrouter from "./router/user.controller.js"
+import userrouter from "./router/user.router.js"
+import bookrouter from "./router/book.router.js"
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get("/check" , (Req , resp) => {
 });
 
 app.use("/user" , userrouter);
+app.use("/book" , bookrouter)
 
 app.use(notFound);
 app.use(handleError);
