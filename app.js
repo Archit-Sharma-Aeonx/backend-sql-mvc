@@ -6,6 +6,7 @@ import {handleError} from "./middlewares/handleError.js"
 import {notFound} from "./middlewares/notFound.js"
 import userrouter from "./router/user.router.js"
 import bookrouter from "./router/book.router.js"
+import borowwerroute from "./router/borrowing.router.js"
 
 dotenv.config();
 
@@ -32,7 +33,8 @@ app.get("/check" , (Req , resp) => {
 });
 
 app.use("/user" , userrouter);
-app.use("/book" , bookrouter)
+app.use("/book" , bookrouter);
+app.use('/borrowing' , borowwerroute);
 
 app.use(notFound);
 app.use(handleError);
