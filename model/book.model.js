@@ -1,4 +1,5 @@
 import pool from "../db/connect.js";
+import { UPDATEBOOK } from "../controller/book.controller.js";
 
 export const booksModel = {
 
@@ -22,10 +23,10 @@ export const booksModel = {
         return result;
     },
 
-    updateBook: async (book_name, author_name, shelf_number, stock) => {
+    updateBook: async (values , setClause) => {
 
-        const [result] = await pool.query("UPDATE books set book_name = ? , author_name =? , shelf_number =? , stock =?",
-            [book_name, author_name, shelf_number, stock]
+        const [result] = await pool.query(`UPDATE books set ${setClause} where id = ? `,
+            values
         );
         return result;
     },

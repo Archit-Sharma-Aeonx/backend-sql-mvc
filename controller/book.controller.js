@@ -36,12 +36,38 @@ export const AddBook = tryCatchWrapper(async (req, resp) => {
 export const UPDATEBOOK = tryCatchWrapper(async (req, resp) => {
 
     const { id } = req.params
-    const { book_name, author_name, shelf_number, stock } = req.body;
 
-    if (!book_name || !author_name || !shelf_number || !stock) return resp.status(400).json({ message: "All fields are required to be filled" })
+    const allowedFields = [
+        "book_name",
+        "author_name",
+        "shelf_number",
+        "stock"
+    ]
+    const fields = Object.keys(req.body)
 
-    const result = await booksModel.updateBook(book_name, author_name, shelf_number, stock);
-    return resp.status(200).json({ message: "The book is updated as per given information" });
+    const validFields = fields.filter((field) => {
+        return allowedFields.includes(field);
+    });
+
+    if (validFields.length === 0) return resp.status(400).json({ message: "No valid field is provided to be updated" });
+
+    const updateFields = validFields.map((field) => {
+        return `${field} = ?`
+    })
+
+    const setClause = updateFields.join(", ")
+
+    const values = validFields.map((field) => {
+        return req.body[field]
+    });
+
+    values.push(id);
+
+    const result = await booksModel.updateBook(values, setClause);
+
+    if (result.affectedRows === 0) return resp.status(400).json("Invalid id to be updated!!")
+
+    return resp.status(200).json({ message: "Update is done according to the request" });
 
 });
 
@@ -52,7 +78,7 @@ export const DELETEBOOK = tryCatchWrapper(async (req, resp) => {
 
     const result = await booksModel.deleteBook(id);
 
-    if (result.affectedRows === 0) return resp.staus(400).json({ message: `User with id: ${id} does not exist` });
+    if (result.affectedRows === 0) return resp.status(400).json({ message: `User with id: ${id} does not exist` });
     return resp.status(200).json({ message: `User with id: ${id} is now deleted` })
 
 })
