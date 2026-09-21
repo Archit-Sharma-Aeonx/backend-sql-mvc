@@ -7,6 +7,7 @@ import {notFound} from "./middlewares/notFound.js"
 import userrouter from "./router/user.router.js"
 import bookrouter from "./router/book.router.js"
 import borowwerroute from "./router/borrowing.router.js"
+import authrouter from "./router/auth.router.js";
 
 dotenv.config();
 
@@ -30,11 +31,12 @@ app.get("/check" , (Req , resp) => {
     resp.json ({
         message : "This is the working with respect to MVC structure 🎉 !!"
     })
-});
+});i 
 
 app.use("/user" , userrouter);
 app.use("/book" , bookrouter);
 app.use('/borrowing' , borowwerroute);
+app.use("/auth" , authrouter);
 
 app.use(notFound);
 app.use(handleError);
