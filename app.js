@@ -31,7 +31,7 @@ app.get("/check" , (Req , resp) => {
     resp.json ({
         message : "This is the working with respect to MVC structure 🎉 !!"
     })
-});i 
+});
 
 app.use("/user" , userrouter);
 app.use("/book" , bookrouter);
