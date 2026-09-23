@@ -21,9 +21,11 @@ export const BORROWERBYID = tryCatchWrapper(async (req, resp) => {
 
 export const NEWBORROWER = tryCatchWrapper(async (req, resp) => {
 
-    const { user_id, book_id, expected_return_date } = req.body;
+    const {  book_id, expected_return_date } = req.body;
 
-    if (!user_id || !book_id || !expected_return_date) return resp.status(400).json({ message: "All fields are required" });
+    if ( !book_id || !expected_return_date) return resp.status(400).json({ message: "All fields are required" });
+
+    const user_id = req.user.id;
 
     const result = await borrowingDbQueries.NewBorrower(user_id, book_id, expected_return_date);
 

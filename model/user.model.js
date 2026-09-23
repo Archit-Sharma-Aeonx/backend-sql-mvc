@@ -32,9 +32,21 @@ const UsersModel = {
         return result;
     },
 
-    deleteUser: async(id) => {
-        const [result] = await pool.query("DELETE FROM users where id = ?" ,[id])
-        return result;
+    checkActiveBorrowing: async(id) => {
+        const [check] = await pool.query("SELECT * FROM borrowings where user_id = ? and actual_return_date IS NULL" , 
+            [id]
+        )
+        return check;
+    },
+
+    deleteuser : async(id) => {
+        const [remove] = await pool.query("DELETE  FROM users where id = ?" , [id]);
+        return remove;
+    },
+
+    checkBorrowingHistory : async(id) => {
+        const [check] = await pool.query("SELECT * FROM borrowings WHERE user_id = ?" , [id])
+        return check;
     }
 
 }

@@ -44,7 +44,7 @@ export const UPDATEBOOK = tryCatchWrapper(async (req, resp) => {
         "stock"
     ]
     const fields = Object.keys(req.body)
-
+ 
     const validFields = fields.filter((field) => {
         return allowedFields.includes(field);
     });
@@ -79,6 +79,6 @@ export const DELETEBOOK = tryCatchWrapper(async (req, resp) => {
     const result = await booksModel.deleteBook(id);
 
     if (result.affectedRows === 0) return resp.status(400).json({ message: `User with id: ${id} does not exist` });
-    return resp.status(200).json({ message: `User with id: ${id} is now deleted` })
+    return resp.status(200).json({ message: `Book with id: ${id} is now deleted` })
 
 })
