@@ -77,5 +77,19 @@ export const borrowingDbQueries = {
 
         }
 
+    },
+
+    findBorrowingById: async(id) => {
+
+        const [result] = await pool.query("SELECT * FROM borrowings where id = ?" , [id]);
+        return result
+    },
+
+    getMyBorrowings: async(user_id) => {
+
+        const [borrwingData] = await pool.query("SELECT * FROM borrowings where user_id = ?" , [user_id])
+
+        const [data] = await pool.query("SELECT br.id as borrowing_id, br.book_id , b.book_name , b.author_name , br.borrow_date , br.expected_return_Date , br.actual_Return_date from books as b INNER JOIN borrowings as br on b.id = br.book_id where br.user_id = ? " , [user_id] )
+        return data ;
     }
 }
