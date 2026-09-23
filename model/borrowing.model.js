@@ -1,4 +1,5 @@
 import pool from "../db/connect.js"
+import { createCustomError } from "../errors/customError.js";
 
 export const borrowingDbQueries = {
 
@@ -21,6 +22,12 @@ export const borrowingDbQueries = {
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
+        
+            const [CheckActiveBorrowing] = await connection.query("SELECT * FROM borrowings where user_id = ? and book_id = ? and actual_return_date is null",
+                    [user_id , book_id]
+                )
+                if(CheckActiveBorrowing.length >0) throw createCustomError("The same book can not be borrowed twice " ,409)
+
             const [result] = await connection.query("update books set stock = stock-1 where id = ? AND stock > 0 ", [book_id])
             if (result.affectedRows === 0) throw new Error("Book not found or is out of stock");
 
@@ -87,9 +94,11 @@ export const borrowingDbQueries = {
 
     getMyBorrowings: async(user_id) => {
 
-        const [borrwingData] = await pool.query("SELECT * FROM borrowings where user_id = ?" , [user_id])
+        await pool.query("SELECT * FROM borrowings where user_id = ?" , [user_id])
 
         const [data] = await pool.query("SELECT br.id as borrowing_id, br.book_id , b.book_name , b.author_name , br.borrow_date , br.expected_return_Date , br.actual_Return_date from books as b INNER JOIN borrowings as br on b.id = br.book_id where br.user_id = ? " , [user_id] )
         return data ;
-    }
+    },
+
+    
 }

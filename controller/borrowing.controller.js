@@ -20,11 +20,18 @@ export const BORROWERBYID = tryCatchWrapper(async (req, resp) => {
 
 });
 
-export const NEWBORROWER = tryCatchWrapper(async (req, resp) => {
+export const NEWBORROWER = tryCatchWrapper(async (req, resp , next) => {
 
     const {  book_id, expected_return_date } = req.body;
 
     if ( !book_id || !expected_return_date) return resp.status(400).json({ message: "All fields are required" });
+    const expectedDate = new Date(expected_return_date);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    new Date().toISOString()
+
+    if(currentDate >= expectedDate) return next(createCustomError("Invalid expected return date !!" , 400))
+    
 
     const user_id = req.user.id;
 
@@ -45,6 +52,8 @@ export const RETURNBOOK = tryCatchWrapper(async (req, resp , next) => {
 
     const database_user_id = row[0].user_id;
     if(database_user_id !== user_id) return next(createCustomError("You can return book linked to your user id only" , 403));
+
+    if(row[0].actual_return_date !== null)return next(createCustomError("The book is already returned and can not be returned twice!!" , 409));
 
      await borrowingDbQueries.returnBook(id);
 
